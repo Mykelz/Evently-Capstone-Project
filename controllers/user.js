@@ -8,11 +8,10 @@ exports.registerUser = async (req, res, next) => {
     try{
         const { first_name, last_name, email, username, password } = req.body;
 
-        const userExst = await User.findOne({ email: email});
-        if(userExst){
+        const emailExst = await User.findOne({ email: email});
+        if(emailExst){
             const error = new Error('User with the email already exits.')
             error.statusCode = 400;
-            authLogger.error(error)
             throw error
         }
         const hashedPw = await bcrypt.hash(password, 12);
@@ -21,14 +20,21 @@ exports.registerUser = async (req, res, next) => {
             first_name: first_name,
             last_name: last_name,
             email: email,
-            username: username,
             password: hashedPw
         })
 
         console.log(user, 'user details')
         res.status(201).json({
             message: 'user created',
-            data: user
+            data: {
+                id: user._id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+
+                updatedAt: user.updatedAt,
+                createdAt: user.createdAt
+            }
         })
     }catch(err){
         if (!err.statusCode){
@@ -64,13 +70,20 @@ exports.loginUser = async (req, res, next)=>{
         process.env.JWT_SECRET,
         { expiresIn: '1hr'}
       );
-      console.log(user.email, 'login successfull')
+      console.log(user.email, '--login successfull')
 
       res.status(200).json({
         message: 'Login Successfull',
         data: {
             accessToken: 'Bearer ' + token,
-            user: user
+            user: {
+                id: user._id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                updatedAt: user.updatedAt,
+                createdAt: user.createdAt
+            }
             }
         })
 

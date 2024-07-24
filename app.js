@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const userRoute = require('./routes/user');
+const eventRoute = require('./routes/events');
+const ticketRoute = require('./routes/event-ticket')
 
 const app = express();
 
@@ -9,6 +11,8 @@ app.use(express.json());
 
 
 app.use('/auth', userRoute);
+app.use(eventRoute);
+app.use(ticketRoute);
 
 
 app.use((error, req, res, next) =>{

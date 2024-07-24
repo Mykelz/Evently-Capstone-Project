@@ -15,20 +15,33 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    username: {
-        type: String,
-        required: true
-    },
     password: {
         type: String,
         required: true
     },
-    Events:   [
+    role: { 
+        type: String, 
+        enum: ['admin', 'user', 'creator'], 
+        default: 'user' 
+    },
+    createdEvents:   [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Events',
+            ref: 'Event',
         }
             ],
+    appliedEvents:   [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Event',
+        }
+            ],
+    tickets:  [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Ticket',
+        }
+            ]
 
 }, { timestamps: true })
 
