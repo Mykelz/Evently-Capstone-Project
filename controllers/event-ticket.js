@@ -3,7 +3,7 @@ const User  = require('../models/user');
 const Ticket = require('../models/event-ticket');
 const axios = require('axios');
 require('dotenv').config();
-const qrCode = require('qrcode');
+const QRCode = require('../utils/qrcode')
 
 exports.createTicket = async (req, res, next) =>{
     try{
@@ -84,6 +84,9 @@ exports.verifyTrans = async (req, res, next) =>{
         for ( i = 0; i < tickets.length; i++){
             if (response.data.data.status === 'success'){
                 tickets[i].status = 'paid'
+
+                const qrCode = await QRCode.generateQRCode(`eventId: ${tickets[i].event}, User: ${req.user}, Ticket: ${i + 1}`);
+                tickets[i].qrCode = qrCode
                 await tickets[i].save();
             }
 

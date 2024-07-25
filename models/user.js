@@ -36,6 +36,15 @@ const userSchema = new Schema({
             ref: 'Event',
         }
             ],
+    eventReminders: [{
+        eventId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Event',
+        },
+        reminderDate: {
+            type: Date,
+        }
+        }],   
     tickets:  [
         {
             type: Schema.Types.ObjectId,

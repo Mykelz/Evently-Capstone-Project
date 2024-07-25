@@ -23,10 +23,9 @@ const ticketSchema = new Schema({
     transactionId: {
         type: String
       },
-    // qrCode: {
-    //     type: String,
-    //     required: true
-    //   }
+    qrCode: {
+        type: String,
+      }
 }, { timestamps: true })
 
 

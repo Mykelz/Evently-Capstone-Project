@@ -9,7 +9,8 @@ const router = express.Router();
 router.post('/event', isAuth, eventValidation ,eventController.createEvent);
 router.get('/event', eventController.getAllEvent);
 router.get('/event/creator', isAuth,  eventController.getCreatorEvent);
-router.post('/event/:eventId', isAuth ,eventController.applyForEvent);
+router.post('/event/:eventId', isAuth, eventController.applyForEvent);
+router.get('/event/:eventId', isAuth, eventController.getEventById);
 
 
 

@@ -13,6 +13,4 @@ router.post('/verifyPayment/:paystack_ref', isAuth, ticketController.verifyTrans
 
 
 
-
-
 module.exports = router;

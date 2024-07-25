@@ -78,6 +78,13 @@ exports.applyForEvent = async (req, res, next) =>{
     
         const event = await Event.findById(eventId);
 
+        const eventees = event.Eventees;
+
+        if (eventees.includes(req.user)){
+            const error = new Error('Sorry you already applied for this event');
+            error.statusCode = 401;
+            throw error;
+        }
         const user = await User.findById(req.user)
 
         event.Eventees.push(req.user)
@@ -98,3 +105,41 @@ exports.applyForEvent = async (req, res, next) =>{
         next(err)
     }
 }
+
+exports.getEventById = async (req, res, next) =>{
+
+    try{
+        const eventId = req.params.eventId;
+
+        const event = await Event.findById(eventId);
+    
+        if (!event){
+            const error = new Error('No event found');
+            error.statusCode = 404;
+            throw error; 
+        }
+    
+        res.status(200).json({
+            messsage: "Event details",
+            data: event
+        })
+    }catch(err){
+        if (!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err)
+    }
+}
+
+exports.setEventReminder = async (req, res) => {
+    try {
+      const { eventId, reminder } = req.body;
+      const user = await User.findById(req.user._id);
+      user.eventReminders.push({ eventId, reminderDate: new Date(reminder) });
+      await user.save();
+  
+      res.status(200).json({ message: 'Reminder set successfully' });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
