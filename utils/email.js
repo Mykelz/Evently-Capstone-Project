@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 
-const sendEmail = async (users, eventName)=>{
+const sendEmail = async (users, eventNames)=>{
     try{
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -14,14 +14,16 @@ const sendEmail = async (users, eventName)=>{
           });
 
           for (const user of users){
-            const mailOptions = {
-                from: '"Evently" obianukamicheal@gmail.com', // sender address
-                to: user, // list of receivers
-                subject: ` Reminder For Your Upcoming Event Titled: ${eventName} !!`, // Subject line
-                html: emailTemplate, // html body
-              }
-              let info = await transporter.sendMail(mailOptions);
-              console.log('Message sent: %s', info.messageId);
+            for (const eventName of eventNames){
+                const mailOptions = {
+                    from: '"Evently" obianukamicheal@gmail.com', // sender address
+                    to: user, // list of receivers
+                    subject: ` Reminder For Your Upcoming Event Titled: ${eventName} !!`, // Subject line
+                    html: emailTemplate, // html body
+                  }
+                  let info = await transporter.sendMail(mailOptions);
+                  console.log('Message sent: %s', info.messageId);
+            }
           }
     }catch(err){
         console.log(err)

@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const userRoute = require('./routes/user');
 const eventRoute = require('./routes/events');
-const ticketRoute = require('./routes/event-ticket')
+const ticketRoute = require('./routes/event-ticket');
+const scheduleReminders = require('./utils/reminder');
+const schedule = require('node-schedule')
 
 const app = express();
 
@@ -13,6 +15,9 @@ app.use(express.json());
 app.use('/auth', userRoute);
 app.use(eventRoute);
 app.use(ticketRoute);
+
+
+schedule.scheduleJob('* * * * *', scheduleReminders)
 
 
 app.use((error, req, res, next) =>{

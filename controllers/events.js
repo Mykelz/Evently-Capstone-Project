@@ -5,7 +5,6 @@ exports.createEvent = async (req, res, next) =>{
     try{
         const { title, tag, description, venue, price, ticketsAvailable, eventDate, reminderDate } = req.body;
         const user = await User.findById(req.user);
-        console.log(user)
 
         const event = await Event.create({
             title: title,
