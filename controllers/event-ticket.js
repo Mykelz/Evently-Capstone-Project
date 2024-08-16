@@ -15,9 +15,15 @@ exports.createTicket = async (req, res, next) =>{
             error.statusCode = 400;
             throw error
         }
-
+        
         const event = await Event.findById(eventId);
         const user = await User.findById(req.user);
+
+        if (!user.appliedEvents.includes(eventId)){
+            const error = new Error('You have to apply to this event first before creating a ticket')
+            error.statusCode = 401;
+            throw error
+        }
 
         const userEmail = user.email
         const eventPrice = event.price;
@@ -81,17 +87,28 @@ exports.verifyTrans = async (req, res, next) =>{
 
         const tickets = await Ticket.find({ transactionId: paystack_ref});
 
+        const eventId = tickets[0].event
+        const event = await Event.findById(eventId);
+        event.Eventees.push(req.user)
+
+        const totalTickets = event.totalTickets
+        let ticketRemaining = event.ticketsAvailable
         for ( i = 0; i < tickets.length; i++){
-            if (response.data.data.status === 'success'){
+            if (response.data.data.status === 'success' && tickets[i].status !== 'paid'){
                 tickets[i].status = 'paid'
 
-                const qrCode = await QRCode.generateQRCode(`eventId: ${tickets[i].event}, User: ${req.user}, Ticket: ${i + 1}`);
+                ticketRemaining = ticketRemaining - 1
+                console.log(ticketRemaining)
+
+                const qrCode = await QRCode.generateQRCode(`ticketId: ${tickets[i]._id}, User: ${req.user}, Ticket: ${i + 1}`);
                 tickets[i].qrCode = qrCode
                 await tickets[i].save();
             }
-
         }
-
+        event.ticketsAvailable = ticketRemaining;
+        const ticketBought = totalTickets - ticketRemaining;
+        event.ticketsBought = ticketBought;
+        await event.save();
 
         res.status(200).json(response.data);
 

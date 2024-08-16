@@ -17,7 +17,7 @@ app.use(eventRoute);
 app.use(ticketRoute);
 
 
-schedule.scheduleJob('* * * * *', scheduleReminders)
+schedule.scheduleJob('0 7 * *', scheduleReminders)
 
 
 app.use((error, req, res, next) =>{
@@ -36,3 +36,5 @@ mongoose.connect(process.env.CONNECT).then(connection=>{
 }).catch(err=>{
     console.log(err)
 })
+
+module.exports = app;

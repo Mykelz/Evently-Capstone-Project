@@ -23,9 +23,17 @@ const eventSchema = new Schema({
         type: Number,
         required: true
     },
+    totalTickets: {
+        type: Number,
+        required: true
+    },
     ticketsAvailable: { 
         type: Number, 
         required: true 
+    },
+    ticketsBought: {
+        type: Number,
+        required: true
     },
     eventDate: {
         type: Date,

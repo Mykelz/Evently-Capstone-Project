@@ -19,7 +19,7 @@ const sendEmail = async (users, eventNames)=>{
                     from: '"Evently" obianukamicheal@gmail.com', // sender address
                     to: user, // list of receivers
                     subject: ` Reminder For Your Upcoming Event Titled: ${eventName} !!`, // Subject line
-                    html: emailTemplate, // html body
+                    html: "<p> This is a reminder for your upcoming event.</p>", // html body
                   }
                   let info = await transporter.sendMail(mailOptions);
                   console.log('Message sent: %s', info.messageId);

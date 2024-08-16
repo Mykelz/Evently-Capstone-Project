@@ -3,7 +3,7 @@ const User = require('../models/user.js');
 
 exports.createEvent = async (req, res, next) =>{
     try{
-        const { title, tag, description, venue, price, ticketsAvailable, eventDate, reminderDate } = req.body;
+        const { title, tag, description, venue, price, totalTickets, eventDate, reminderDate } = req.body;
         const user = await User.findById(req.user);
 
         const event = await Event.create({
@@ -12,9 +12,10 @@ exports.createEvent = async (req, res, next) =>{
             description: description,
             venue: venue,
             price: price,
-            ticketsAvailable: ticketsAvailable,
+            totalTickets: totalTickets,
+            ticketsAvailable: totalTickets,
             eventDate: eventDate,
-            reminderDate: reminderDate,
+            reminderDate: new Date(reminderDate),
             creator: req.user
         })
 
@@ -86,9 +87,6 @@ exports.applyForEvent = async (req, res, next) =>{
         }
         const user = await User.findById(req.user)
 
-        event.Eventees.push(req.user)
-        await event.save()
-
         user.appliedEvents.push(event._id);
         await user.save();
 
@@ -100,6 +98,7 @@ exports.applyForEvent = async (req, res, next) =>{
     }catch(err){
         if (!err.statusCode){
             err.statusCode = 500;
+            console.log(err)
         }
         next(err)
     }
@@ -132,13 +131,25 @@ exports.getEventById = async (req, res, next) =>{
 
 exports.setEventReminder = async (req, res) => {
     try {
-      const { eventId, reminder } = req.body;
-      const user = await User.findById(req.user._id);
-      user.eventReminders.push({ eventId, reminderDate: new Date(reminder) });
-      await user.save();
+    const eventId = req.params.eventId;
+    const event = await Event.findById(eventId);
+    const reminder = req.body.reminderDate;
+    const user = await User.findById(req.user);
+    
+    if (!user.appliedEvents.includes(eventId)){
+        const error = new Error('Sorry you have to apply for this event first before setting a reminder');
+        error.statusCode = 401;
+        throw error;
+    }
+    
+    user.eventReminders.push({ eventTitle: event.title, reminderDate: new Date(reminder) });
+    await user.save();
   
       res.status(200).json({ message: 'Reminder set successfully' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        if (!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err)
     }
-  };
+};
