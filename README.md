@@ -1,5 +1,5 @@
 # Evently
-Evently is a Node.js-based API for managing events, registrations, and reminders. This README provides an overview of the API endpoints, installation instructions, and usage examples.
+Evently is a Node.js-based API for managing event, and event ticketing. This README provides an overview of the API endpoints, installation instructions, and usage examples.
 
 ## Table of Contents
 - [Overview](#Overview)
