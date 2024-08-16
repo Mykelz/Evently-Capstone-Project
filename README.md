@@ -47,11 +47,7 @@ To install and run evently locally, follow these steps.
     The server will start on http://localhost:5000.
 
 # Configuration
-Ensure you have the following environment variables configured:
-
-   - PORT: The port number on which the server will run.
-   - MONGO_URI: Your MongoDB connection string.
-   - JWT_SECRET: The secret key for JWT token generation.
+Ensure you have all of above environment variables configured:
 
 # Usage
 ### PostMan collection
