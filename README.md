@@ -15,9 +15,9 @@ Evently is designed to help users create and manage events, send reminders, and 
 # Features
 - Event Management: Create, update, and delete events.
 - Event Ticket Management: Create and purchase event ticket.
-- User Registration: Register users and manage their profiles.
+- User Registration: Register users.
 - Event Reminders: Send reminders to registered users for upcoming events.
-- Authentication: Secure endpoints using JWT-based authentication.
+- Authentication/Authorization: Secure endpoints using JWT-based authentication.
 
 # Installation
 To install and run evently locally, follow these steps.
