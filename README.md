@@ -8,7 +8,7 @@ Evently is a Node.js-based API for managing event, and event ticketing. This REA
 - [Configuration](#Configuration)
 - [Usage](#Usage)
 - [Contributing](#Contributing)
-- [License](#Lincense)
+
 # Overview
 Evently is designed to help users create and manage events, send reminders, and handle user registrations. The API is RESTful and uses JSON for data interchange. It integrates with MongoDB as the database, with Mongoose as the ODM.
 
