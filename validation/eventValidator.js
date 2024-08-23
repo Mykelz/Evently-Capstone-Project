@@ -36,7 +36,7 @@ const eventValidator = Joi.object({
     price: Joi.number()
         .required(),
 
-    ticketsAvailable: Joi.number()
+    totalTickets: Joi.number()
         .required()
         .min(10),
     

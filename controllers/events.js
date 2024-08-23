@@ -1,5 +1,7 @@
 const Event = require('../models/events');
 const User = require('../models/user.js');
+const redisClient = require('../utils/redis');
+
 
 exports.createEvent = async (req, res, next) =>{
     try{
@@ -21,6 +23,14 @@ exports.createEvent = async (req, res, next) =>{
 
         user.createdEvents.push(event);
         await user.save();
+        
+        // Clear cache related to events with pattern matching
+        const cachePattern = 'events:*';
+        const keys = await redisClient.keys(cachePattern);
+        if (keys.length > 0) {
+            await redisClient.del(keys);
+        }
+
 
         res.status(201).json({
             message: 'Event created', 
@@ -37,7 +47,46 @@ exports.createEvent = async (req, res, next) =>{
 
 exports.getAllEvent = async (req, res, next) =>{
     try{
-        const events = await Event.find();
+
+        const { limit = 3, page = 1, title, tag, order, orderBy} = req.query;
+        let sortQ = {};
+        
+        if(orderBy === "price" && order === "asc"){
+            sortQ["price"] = 'asc'
+
+        }
+        else if(orderBy === "price" && order === "desc"){
+            sortQ["price"] = 'desc'
+        }
+
+        let filterQ = {};
+
+        if (title){
+            filterQ["title"] = { $regex: title}
+        }
+        else if(tag){
+            filterQ["tag"] = { $regex: tag} 
+        }
+
+        const cacheKey = `events:${JSON.stringify(sortQ)}:${JSON.stringify(filterQ)}:${limit}:${page}`
+
+        const data = await redisClient.get(cacheKey);
+        if (data){
+            console.log('cache hit')
+            return res.status(200).json({
+                message: 'All Events',
+                data: JSON.parse(data)
+            })
+        }
+
+        const events = await Event.find(filterQ)
+        .sort(sortQ)
+        .skip( (page - 1) * limit)
+        .limit(limit)
+        .exec()
+
+        await redisClient.setEx(cacheKey, 10 * 60, JSON.stringify(events));
+        console.log('cache miss')
 
         res.status(200).json({
             message: 'All Events',
